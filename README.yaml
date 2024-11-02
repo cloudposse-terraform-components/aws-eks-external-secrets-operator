@@ -1,70 +1,138 @@
-name: "template"
-
+name: "aws-eks-external-secrets-operator"
 # Canonical GitHub repo
-github_repo: "cloudposse-terraform-components/template"
-
+github_repo: "cloudposse-terraform-components/aws-eks-external-secrets-operator"
 # Short description of this project
 description: |-
-  Description of this component
+  This component (ESO) is used to create an external `SecretStore` configured to synchronize secrets from AWS SSM
+  Parameter store as Kubernetes Secrets within the cluster. Per the operator pattern, the `external-secret-operator` pods
+  will watch for any `ExternalSecret` resources which reference the `SecretStore` to pull secrets from.
 
-usage: |-
-  **Stack Level**: Regional or Test47
+  In practice, this means apps will define an `ExternalSecret` that pulls all env into a single secret as part of a helm
+  chart; e.g.:
 
-  Here's an example snippet for how to use this component.
-  
+  ```
+  # Part of the charts in `/releases
+
+  apiVersion: external-secrets.io/v1beta1
+  kind: ExternalSecret
+  metadata:
+    name: app-secrets
+  spec:
+    refreshInterval: 30s
+    secretStoreRef:
+      name: "secret-store-parameter-store" # Must match name of the Cluster Secret Store created by this component
+      kind: ClusterSecretStore
+    target:
+      creationPolicy: Owner
+      name: app-secrets
+    dataFrom:
+    - find:
+        name:
+          regexp: "^/app/" # Match the path prefix of your service
+      rewrite:
+      - regexp:
+          source: "/app/(.*)" # Remove the path prefix of your service from the name before creating the envars
+          target: "$1"
+  ```
+
+  This component assumes secrets are prefixed by "service" in parameter store (e.g. `/app/my_secret`). The `SecretStore`.
+  The component is designed to pull secrets from a `path` prefix (defaulting to `"app"`). This should work nicely along
+  `chamber` which uses this same path (called a "service" in Chamber). For example, developers should store keys like so.
+
+  ```bash
+  assume-role acme-platform-gbl-sandbox-admin
+  chamber write app MY_KEY my-value
+  ```
+
+  See `docs/recipes.md` for more information on managing secrets.
+
+  ## Usage
+
+  **Stack Level**: Regional
+
+  Use this in the catalog or use these variables to overwrite the catalog values.
+
   ```yaml
   components:
     terraform:
-      foo:
+      eks/external-secrets-operator:
+        settings:
+          spacelift:
+            workspace_enabled: true
         vars:
           enabled: true
+          name: "external-secrets-operator"
+          helm_manifest_experiment_enabled: false
+          chart: "external-secrets"
+          chart_repository: "https://charts.external-secrets.io"
+          chart_version: "0.8.3"
+          kubernetes_namespace: "secrets"
+          create_namespace: true
+          timeout: 90
+          wait: true
+          atomic: true
+          cleanup_on_fail: true
+          tags:
+            Team: sre
+            Service: external-secrets-operator
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "300Mi"
+            requests:
+              cpu: "20m"
+              memory: "60Mi"
+          parameter_store_paths:
+            - app
+            - rds
+          # You can use `chart_values` to set any other chart options. Treat `chart_values` as the root of the doc.
+          #
+          # # For example
+          # ---
+          # chart_values:
+          #   installCRDs: true
+          chart_values: {}
+          kms_aliases_allow_decrypt: []
+          # - "alias/foo/bar"
   ```
 
+  <!-- prettier-ignore-start -->
+
+  <!-- prettier-ignore-end -->
+
+  ## References
+
+  - [Secrets Management Strategy](https://docs.cloudposse.com/layers/project/design-decisions/decide-on-secrets-management-strategy-for-terraform)
+  - https://external-secrets.io/v0.5.9/
+  - https://external-secrets.io/v0.5.9/provider-aws-parameter-store/
 include:
   - "docs/terraform.md"
-
 tags:
-  - terraform
-  - terraform-modules
-  - aws
-  - components
-  - terraform-components
-  - root
-  - geodesic
-  - reference-implementation
-  - reference-architecture
-
+  - component/eks/external-secrets-operator
+  - layer/eks
+  - provider/aws
+  - provider/helm
 # Categories of this project
 categories:
-  - terraform-modules/root
-  - terraform-components
-
+  - component/eks/external-secrets-operator
+  - layer/eks
+  - provider/aws
+  - provider/helm
 # License of this project
 license: "APACHE2"
-
 # Badges to display
 badges:
-  - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse-terraform-components/template.svg?style=for-the-badge"
-    url: "https://github.com/cloudposse-terraform-components/template/releases/latest"
-  - name: "Slack Community"
-    image: "https://slack.cloudposse.com/for-the-badge.svg"
-    url: "https://slack.cloudposse.com"
-
-references:
-  - name: "Cloud Posse Documentation"
-    description: "Complete documentation for the Cloud Posse solution"
-    url: "https://docs.cloudposse.com"
-  - name: "Reference Architectures"
-    description: "Launch effortlessly with our turnkey reference architectures, built either by your team or ours."
-    url: "https://cloudposse.com/"
-
+  - name: Latest Release
+    image: https://img.shields.io/github/release/cloudposse-terraform-components/aws-eks-external-secrets-operator.svg?style=for-the-badge
+    url: https://github.com/cloudposse-terraform-components/aws-eks-external-secrets-operator/releases/latest
+  - name: Slack Community
+    image: https://slack.cloudposse.com/for-the-badge.svg
+    url: https://slack.cloudposse.com
 related:
-- name: "Cloud Posse Terraform Modules"
-  description: Our collection of reusable Terraform modules used by our reference architectures.
-  url: "https://docs.cloudposse.com/modules/"
-- name: "Atmos"
-  description: "Atmos is like docker-compose but for your infrastructure"
-  url: "https://atmos.tools"
-
+  - name: "Cloud Posse Terraform Modules"
+    description: Our collection of reusable Terraform modules used by our reference architectures.
+    url: "https://docs.cloudposse.com/modules/"
+  - name: "Atmos"
+    description: "Atmos is like docker-compose but for your infrastructure"
+    url: "https://atmos.tools"
 contributors: [] # If included generates contribs
