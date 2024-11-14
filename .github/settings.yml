@@ -1,11 +1,7 @@
 # Upstream changes from _extends are only recognized when modifications are made to this file in the default branch.
 _extends: .github
 repository:
-  name: template
-  description: Template for Terraform Components
+  name: aws-eks-external-secrets-operator
+  description: This component (ESO) is used to create an external `SecretStore` configured to synchronize secrets from AWS SSM Parameter store as Kubernetes Secrets within the cluster
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-component
-
-
-
-
