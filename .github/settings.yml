@@ -5,3 +5,4 @@ repository:
   description: This component (ESO) is used to create an external `SecretStore` configured to synchronize secrets from AWS SSM Parameter store as Kubernetes Secrets within the cluster
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-component
+
