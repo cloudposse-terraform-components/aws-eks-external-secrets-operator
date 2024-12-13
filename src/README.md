@@ -6,7 +6,7 @@ tags:
   - provider/helm
 ---
 
-# Component: `eks`
+# Component: `eks-external-secrets-operator`
 
 This component (ESO) is used to create an external `SecretStore` configured to synchronize secrets from AWS SSM
 Parameter store as Kubernetes Secrets within the cluster. Per the operator pattern, the `external-secret-operator` pods
