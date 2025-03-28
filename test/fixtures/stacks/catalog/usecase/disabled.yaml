@@ -1,0 +1,43 @@
+components:
+  terraform:
+    eks/external-secrets-operator/disabled:
+      metadata:
+        component: eks/external-secrets-operator
+      vars:
+        enabled: false
+        kube_exec_auth_role_arn_enabled: false
+        dns_gbl_delegated_environment_name: ue2
+        dns_gbl_primary_environment_name: ue2
+        name: "external-secrets-operator"
+        helm_manifest_experiment_enabled: false
+        chart: "external-secrets"
+        chart_repository: "https://charts.external-secrets.io"
+        chart_version: "0.8.3"
+        kubernetes_namespace: "secrets"
+        create_namespace: true
+        timeout: 90
+        wait: true
+        atomic: true
+        cleanup_on_fail: true
+        tags:
+          Team: sre
+          Service: external-secrets-operator
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "300Mi"
+          requests:
+            cpu: "20m"
+            memory: "60Mi"
+        parameter_store_paths:
+          - app
+          - rds
+        # You can use `chart_values` to set any other chart options. Treat `chart_values` as the root of the doc.
+        #
+        # # For example
+        # ---
+        # chart_values:
+        #   installCRDs: true
+        chart_values: {}
+        kms_aliases_allow_decrypt: []
+        # - "alias/foo/bar"
