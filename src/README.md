@@ -123,8 +123,8 @@ components:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_account_map"></a> [account\_map](#module\_account\_map) | cloudposse/stack-config/yaml//modules/remote-state | 1.5.0 |
-| <a name="module_eks"></a> [eks](#module\_eks) | cloudposse/stack-config/yaml//modules/remote-state | 1.5.0 |
+| <a name="module_account_map"></a> [account\_map](#module\_account\_map) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
 | <a name="module_external_secrets_operator"></a> [external\_secrets\_operator](#module\_external\_secrets\_operator) | cloudposse/helm-release/aws | 0.10.1 |
 | <a name="module_external_ssm_secrets"></a> [external\_ssm\_secrets](#module\_external\_ssm\_secrets) | cloudposse/helm-release/aws | 0.10.1 |
 | <a name="module_iam_roles"></a> [iam\_roles](#module\_iam\_roles) | ../../account-map/modules/iam-roles | n/a |
