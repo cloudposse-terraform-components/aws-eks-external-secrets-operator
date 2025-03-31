@@ -171,6 +171,7 @@ func (s *ComponentSuite) TestBasic() {
 			msg := "ExternalSecret is ready"
 			fmt.Println(msg)
 		case <-time.After(5 * time.Minute):
+			defer close(stopChannel)
 			msg := "ExternalSecret is not ready"
 			assert.Fail(s.T(), msg)
 	}
