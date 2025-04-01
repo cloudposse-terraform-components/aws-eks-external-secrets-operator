@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
@@ -73,6 +74,10 @@ func (s *ComponentSuite) TestBasic() {
 	assert.NotNil(s.T(), metadata.Values)
 	assert.Equal(s.T(), metadata.Version, "0.8.3")
 
+	// Deploy second time to create ClusterSecretStore resource
+	options, _ = s.DeployAtmosComponent(s.T(), component, stack, &inputs)
+	assert.NotNil(s.T(), options)
+
 	config, err := awsHelper.NewK8SClientConfig(cluster)
 	assert.NoError(s.T(), err)
 	assert.NotNil(s.T(), config)
@@ -121,8 +126,7 @@ func (s *ComponentSuite) TestBasic() {
 		},
 	}
 
-
-	factory := dynamicinformer.NewDynamicSharedInformerFactory(dynamicClient, 0)
+	factory := dynamicinformer.NewFilteredDynamicSharedInformerFactory(dynamicClient, time.Minute, corev1.NamespaceAll, nil)
 	informer := factory.ForResource(externalSecretGVR).Informer()
 
 	stopChannel := make(chan struct{})
@@ -136,6 +140,7 @@ func (s *ComponentSuite) TestBasic() {
 				return
 			}
 
+			// Ensure we are checking the status of the correct object
 			conditions, found, err := unstructured.NestedSlice(externalSecret.Object, "status", "conditions")
 
 			if err != nil || !found {
@@ -171,6 +176,7 @@ func (s *ComponentSuite) TestBasic() {
 			msg := "ExternalSecret is ready"
 			fmt.Println(msg)
 		case <-time.After(1 * time.Minute):
+			defer close(stopChannel)
 			msg := "ExternalSecret is not ready"
 			assert.Fail(s.T(), msg)
 	}
