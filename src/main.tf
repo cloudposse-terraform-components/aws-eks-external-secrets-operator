@@ -128,7 +128,7 @@ module "external_ssm_secrets" {
 
   values = compact([
     yamlencode({
-      region                = var.region,
+      region = var.region
     })
   ])
 
