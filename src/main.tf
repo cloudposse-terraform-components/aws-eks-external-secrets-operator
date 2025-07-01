@@ -128,15 +128,7 @@ module "external_ssm_secrets" {
 
   values = compact([
     yamlencode({
-      region                = var.region,
-      parameter_store_paths = var.parameter_store_paths
-      resources             = var.resources
-      serviceAccount = {
-        name = module.this.name
-      }
-      rbac = {
-        create = var.rbac_enabled
-      }
+      region = var.region
     })
   ])
 
