@@ -50,7 +50,6 @@ chamber write app MY_KEY my-value
 ```
 
 See `docs/recipes.md` for more information on managing secrets.
-
 ## Usage
 
 **Stack Level**: Regional
@@ -102,7 +101,10 @@ components:
 ```
 
 <!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
+
+
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -197,13 +199,21 @@ components:
 | Name | Description |
 |------|-------------|
 | <a name="output_metadata"></a> [metadata](#output\_metadata) | Block status of the deployed release |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
+
+
 
 ## References
 
-- [Secrets Management Strategy](https://docs.cloudposse.com/layers/project/design-decisions/decide-on-secrets-management-strategy-for-terraform)
-- https://external-secrets.io/v0.5.9/
-- https://external-secrets.io/v0.5.9/provider-aws-parameter-store/
+
+- [Secrets Management Strategy](https://docs.cloudposse.com/layers/project/design-decisions/decide-on-secrets-management-strategy-for-terraform) - 
+
+- [External Secrets v0.5.9](https://external-secrets.io/v0.5.9/) - 
+
+- [External Secrets AWS Parameter Store Provider](https://external-secrets.io/v0.5.9/provider-aws-parameter-store/) - 
+
+
+
 
 [<img src="https://cloudposse.com/logo-300x69.svg" height="32" align="right"/>](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-terraform-components/aws-eks-external-secrets-operator&utm_content=)
+
