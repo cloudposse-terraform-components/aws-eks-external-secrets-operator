@@ -1,3 +1,7 @@
+locals {
+  account_map_enabled = local.enabled && var.account_map_enabled
+}
+
 variable "eks" {
   type = object({
     eks_cluster_id                         = optional(string, null)
@@ -52,7 +56,7 @@ module "account_map" {
   environment = var.account_map_environment_name
   stage       = var.account_map_stage_name
 
-  bypass = !var.account_map_enabled
+  bypass = !local.account_map_enabled
 
   defaults = {
     full_account_map = var.account_map.full_account_map
