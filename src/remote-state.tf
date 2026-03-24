@@ -44,6 +44,9 @@ variable "account_map_stage_name" {
   description = "The name of the stage where account-map is deployed. Only used when account_map_enabled is true."
 }
 
+locals {
+  account_map_enabled = var.enabled && var.account_map_enabled
+}
 module "account_map" {
   source  = "cloudposse/stack-config/yaml//modules/remote-state"
   version = "2.0.0"
@@ -52,7 +55,7 @@ module "account_map" {
   environment = var.account_map_environment_name
   stage       = var.account_map_stage_name
 
-  bypass = !var.account_map_enabled
+  bypass = !local.account_map_enabled
 
   defaults = {
     full_account_map = var.account_map.full_account_map
