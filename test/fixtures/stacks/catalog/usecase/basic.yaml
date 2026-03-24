@@ -4,6 +4,10 @@ components:
       metadata:
         component: eks/external-secrets-operator
       vars:
+        account_map_enabled: false
+        account_map:
+          full_account_map:
+            default-test: '{{ getenv "TEST_ACCOUNT_ID" | default "<TEST_ACCOUNT_ID>" }}'
         enabled: true
         kube_exec_auth_role_arn_enabled: false
         dns_gbl_delegated_environment_name: ue2
